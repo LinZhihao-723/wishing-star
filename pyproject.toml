@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools >= 61.0", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wishing_star"
+version = "0.0.0"
+readme = "README.md"
+requires-python = ">=3.7"
+authors = [
+    { name="Zhihao Lin", email="zh.lin@mail.utoronto.ca" },
+]
+description = "Discord bot"
+dependencies = [
+    "discord >= 2.3.1",
+    "typing-extensions >= 4.1.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black >= 22.10.0",
+    "mypy >= 0.982",
+    "ruff >= 0.0.275",
+]
+
+[tool.mypy]
+strict = true
+pretty = true
+ignore_missing_imports = true
+warn_return_any = false
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+color = true
+preview = true
+
+[tool.ruff]
+line-length = 100
+src = ["wishing_star"]
