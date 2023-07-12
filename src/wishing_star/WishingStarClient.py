@@ -53,6 +53,6 @@ class WishingStarClient(discord.Client):
         if src_message.startswith("?q:"):
             try:
                 response: str = self.openai_handler.chat(src_message[3:], src_id)
-                await message.channel.send(response)
+                await message.reply(response, mention_author=True)
             except Exception as e:
                 self.logger.warning(e)
