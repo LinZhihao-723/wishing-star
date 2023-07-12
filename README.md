@@ -13,8 +13,8 @@ This is the customized Discord Bot developed by myself.
 
 ## Start
 
-To start the bot, a valid credential token should be provided:
-`python start.py --key $KEY_VAL`
+To start the bot, a valid credential config file should be provided:
+`python start.py --credential $PATH_TO_CREDENTIAL_FILE`
 
 ## Contributing
 
