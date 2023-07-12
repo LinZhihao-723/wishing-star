@@ -13,6 +13,9 @@ authors = [
 description = "Discord bot"
 dependencies = [
     "discord >= 2.3.1",
+    "openai >= 0.27.8",
+    "pyYAML >= 6.0",
+    "requests >= 2.31.0",
     "typing-extensions >= 4.1.1",
 ]
 
@@ -21,6 +24,7 @@ dev = [
     "black >= 22.10.0",
     "mypy >= 0.982",
     "ruff >= 0.0.275",
+    "types-PyYAML >= 6.0.12.10",
 ]
 
 [tool.mypy]
@@ -38,3 +42,10 @@ preview = true
 [tool.ruff]
 line-length = 100
 src = ["wishing_star"]
+
+[tool.docformatter]
+make-summary-multi-line = true
+pre-summary-newline = true
+recursive = true
+wrap-summaries = 80
+wrap-descriptions = 80
