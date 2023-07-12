@@ -13,7 +13,8 @@ This is the customized Discord Bot developed by myself.
 
 ## Start
 
-To start the bot, a valid credential config file should be provided:
+To start the bot, a valid credential config file should be provided.
+A template credential file is given under `doc` directory.
 `python start.py --credential $PATH_TO_CREDENTIAL_FILE`
 
 ## Contributing
