@@ -25,6 +25,7 @@ class WishingStarClient(discord.Client):
         self.logger: logging.Logger = logger
         self.discord_key: str = credential["discord_key"]
         self.openai_handler: OpenAIHandler = OpenAIHandler(credential["openai_key"], logger)
+        self.keyword_openai_handler: str = "Jirachi"
 
     def serve(self) -> None:
         """
@@ -50,9 +51,11 @@ class WishingStarClient(discord.Client):
             return
 
         src_message: str = message.content
-        if src_message.startswith("?q:"):
+        if src_message.startswith(self.keyword_openai_handler):
             try:
-                response: str = self.openai_handler.chat(src_message[3:], src_id)
+                response: str = self.openai_handler.chat(
+                    src_message[len(self.keyword_openai_handler) :], src_id
+                )
                 await message.reply(response, mention_author=True)
             except Exception as e:
                 self.logger.warning(e)

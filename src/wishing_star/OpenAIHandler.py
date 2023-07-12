@@ -4,6 +4,9 @@ from typing import Any, Dict, List
 from wishing_star.utils import get_current_ts
 
 CHAT_RESET_TS: int = 10 * 60 * 1000
+OPENAI_SYS_INIT_MESSAGE: str = "Now, you are playing the role as the Pokemon `Jirachi` and you will"
+"talk to your human friends. Please chat with them and assist them if they ask any questions."
+"If people ask who you are, please don't tell them you are an AI bot :)"
 
 
 class UserChatHistory:
@@ -21,7 +24,7 @@ class UserChatHistory:
         self.uid: int = uid
         self.last_communicate_ts: int = get_current_ts()
         self.chat_history: List[Dict[str, str]] = [
-            {"role": "system", "content": "You are a helpful assistant."}
+            {"role": "system", "content": OPENAI_SYS_INIT_MESSAGE}
         ]
 
     def get_current_chat(self, msg: str, request_ts: int) -> List[Dict[str, str]]:

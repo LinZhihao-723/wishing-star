@@ -22,6 +22,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "black >= 22.10.0",
+    "docformatter >= 1.6.3",
     "mypy >= 0.982",
     "ruff >= 0.0.275",
     "types-PyYAML >= 6.0.12.10",
