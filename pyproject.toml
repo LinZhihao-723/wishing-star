@@ -26,6 +26,7 @@ dev = [
     "mypy >= 0.982",
     "ruff >= 0.0.275",
     "types-PyYAML >= 6.0.12.10",
+    "types-requests >= 2.31.0",
 ]
 
 [tool.mypy]
