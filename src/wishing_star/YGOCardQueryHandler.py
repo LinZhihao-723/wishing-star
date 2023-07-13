@@ -56,7 +56,7 @@ class YGOCardQueryHandler:
 
         :param self
         :param query: Search query input.
-        :return A single matched search result on each yield.
+        :yield: A single matched search result on each yield.
         """
         self.logger.info(f'YGO Search Query: "{query}"')
         params: Dict[str, str] = {"search": query}

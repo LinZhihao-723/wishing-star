@@ -62,7 +62,12 @@ class WishingStarClient(discord.Client):
                 response: str = self.openai_handler.chat(
                     src_message[len(self.keyword_openai_handler) :], src_id
                 )
-                await message.reply(response, mention_author=True)
+                end_pos: int = 0
+                response_len: int = len(response)
+                while end_pos < response_len:
+                    start_pos: int = end_pos
+                    end_pos = min(end_pos + 1800, response_len)
+                    await message.reply(response[start_pos:end_pos], mention_author=True)
             except FrequentRequestRateException:
                 await message.reply(
                     "T.T Jirachi gets too many questions and need to sleep for a while",
