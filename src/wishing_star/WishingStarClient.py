@@ -66,7 +66,7 @@ class WishingStarClient(discord.Client):
                 response_len: int = len(response)
                 while end_pos < response_len:
                     start_pos: int = end_pos
-                    end_pos = min(end_pos + 2000, response_len)
+                    end_pos = min(end_pos + 1800, response_len)
                     await message.reply(response[start_pos:end_pos], mention_author=True)
             except FrequentRequestRateException:
                 await message.reply(
