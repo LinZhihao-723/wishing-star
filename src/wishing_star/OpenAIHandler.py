@@ -2,6 +2,7 @@ import logging
 import openai
 from typing import Any, Dict, List
 from wishing_star.utils import get_current_ts
+from wishing_star.Exceptions import FrequentRequestRateException
 
 CHAT_RESET_TS: int = 10 * 60 * 1000
 OPENAI_SYS_INIT_MESSAGE: str = "Now, you are playing the role as the Pokemon `Jirachi` and you will"
@@ -87,12 +88,12 @@ class OpenAIHandler:
         :param self
         :param msg: Input message from the user.
         :param uid: Discord user id.
-        :return: The response. :raise RequestRateException if the access is too
-            frequent.
+        :return: The response. :raise FrequentRequestRateException if the access
+            is too frequent.
         """
         request_ts: int = get_current_ts()
         if request_ts - self.last_success_request_ts <= self.minimum_request_period:
-            return "T.T Jirachi gets too many questions and needs some time to rest..."
+            raise FrequentRequestRateException("Too frequent access...")
 
         if uid not in self.chat_history_db:
             self.chat_history_db[uid] = UserChatHistory(uid)
