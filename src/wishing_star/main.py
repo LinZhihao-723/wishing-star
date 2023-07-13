@@ -1,4 +1,5 @@
 import argparse
+import asyncio
 import discord
 import logging
 import logging.handlers
@@ -7,7 +8,7 @@ import sys
 import yaml
 
 from typing import Any, Dict, List, Optional
-from wishing_star.WishingStarClient import WishingStarClient
+from wishing_star.WishingStarClient import WishingStar, WishingStarCog
 
 """
 Global logger
@@ -71,7 +72,14 @@ def main(argv: List[str]) -> int:
 
     intents: discord.Intents = discord.Intents.default()
     intents.message_content = True
-    client: WishingStarClient = WishingStarClient(intents, logger, credential)
-    client.serve()
+    wishing_star: WishingStar = WishingStar(
+        command_prefix="?", logger=logger, credential=credential, intents=intents
+    )
 
-    return 0
+    try:
+        asyncio.run(wishing_star.add_cog(WishingStarCog(wishing_star)))
+        wishing_star.serve()
+        return 0
+    except Exception as e:
+        logger.error(f"Exiting on error. Error message: {e}")
+        return -1
