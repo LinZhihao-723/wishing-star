@@ -93,7 +93,7 @@ class OpenAIHandler:
         """
         request_ts: int = get_current_ts()
         if request_ts - self.last_success_request_ts <= self.minimum_request_period:
-            raise FrequentRequestRateException("Too frequent access...")
+            raise FrequentRequestRateException("OpenAIHandler: Requests Too Frequent")
 
         if uid not in self.chat_history_db:
             self.chat_history_db[uid] = UserChatHistory(uid)
