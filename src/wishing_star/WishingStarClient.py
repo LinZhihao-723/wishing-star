@@ -1,7 +1,7 @@
 import discord
 import logging
 from discord.ext import commands
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 from wishing_star.Exceptions import FrequentRequestRateException
 from wishing_star.OpenAIHandler import OpenAIHandler
 from wishing_star.YGOCardQueryHandler import YGOCardQueryHandler
@@ -23,6 +23,7 @@ class WishingStar(commands.Bot):
         command_prefix: Union[str, Any],
         logger: logging.Logger,
         credential: Dict[str, Any],
+        config: Dict[str, Any],
         **options: Any,
     ):
         """
@@ -33,6 +34,7 @@ class WishingStar(commands.Bot):
             command.
         :param logger: Global logging handler.
         :param credential: A dictionary that contains necessary credential keys.
+        :param config: A dictionary that contains customized settings
         :param options: Other options to initialize the low level bot.
         """
         super().__init__(command_prefix, **options)
@@ -40,6 +42,11 @@ class WishingStar(commands.Bot):
         self.discord_key: str = credential["discord_key"]
         self.openai_handler: OpenAIHandler = OpenAIHandler(credential["openai_key"], logger)
         self.ygo_query_handler: YGOCardQueryHandler = YGOCardQueryHandler(logger)
+        self.keyword_blacklist: List[str] = []
+        if "keyword_blacklist" in config:
+            self.keyword_blacklist = config["keyword_blacklist"]
+            for keyword in self.keyword_blacklist:
+                self.logger.info(f"Blacklist Keyword added: {keyword}")
 
     def serve(self) -> None:
         """
@@ -48,6 +55,22 @@ class WishingStar(commands.Bot):
         :param self
         """
         self.run(self.discord_key)
+
+    def keyword_blacklist_detection(self, message: discord.Message) -> bool:
+        """
+        Checks whether the message contains any of the keyword that should be
+        blocked. The keyword list is specified in `keyword_blacklist`.
+
+        :param self
+        :param message: Message to check. :return True if the message contains
+            any one of the keyword.
+        """
+        content: str = message.content
+        content = content.lower()
+        for keyword in self.keyword_blacklist:
+            if keyword in content:
+                return True
+        return False
 
     async def on_ready(self) -> None:
         assert None is not self.user
@@ -97,6 +120,10 @@ class WishingStar(commands.Bot):
         if src_id == self.user.id:
             return
 
+        if self.keyword_blacklist_detection(message):
+            await message.delete()
+            return
+
         if self.user in message.mentions:
             await self.process_jirachi_chatting(message, src_id)
             return
@@ -121,13 +148,11 @@ class WishingStarCog(commands.Cog):
 
     @commands.command()
     async def ygo(
-        self,
-        context: commands.Context, # type: ignore
-        search_query: Optional[str]
+        self, context: commands.Context, search_query: Optional[str]  # type: ignore
     ) -> None:
         """
         Processes YGO search query.
-        
+
         :param self
         :param context: Context input from the users.
         :param search_query: Search input. It is possible to be None.

@@ -80,7 +80,7 @@ class OpenAIHandler:
         self.minimum_request_period: int = 5 * 1000
         self.model: str = "gpt-3.5-turbo"
         if using_gpt_4:
-            self.model = "gpt-4-32k-0613"
+            self.model = "gpt-4"
         self.chat_history_db: Dict[int, UserChatHistory] = {}
 
     def chat(self, msg: str, uid: int) -> str:
@@ -104,7 +104,7 @@ class OpenAIHandler:
         self.logger.info(
             f"Initiates OpenAI Chat Request from User ID: {uid}. Message content:\n{msg}"
         )
-        response: Dict[Any, Any] = openai.ChatCompletion.create( # type: ignore
+        response: Dict[Any, Any] = openai.ChatCompletion.create(  # type: ignore
             model=self.model,
             messages=chat_history.get_current_chat(msg, request_ts),
             temperature=self.default_temperature,
