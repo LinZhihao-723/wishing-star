@@ -1,4 +1,5 @@
 import argparse
+import asyncio
 import discord
 import logging
 import logging.handlers
@@ -7,7 +8,7 @@ import sys
 import yaml
 
 from typing import Any, Dict, List, Optional
-from wishing_star.WishingStarClient import WishingStarClient
+from wishing_star.WishingStarClient import WishingStar, WishingStarCog
 
 """
 Global logger
@@ -51,6 +52,11 @@ def main(argv: List[str]) -> int:
         required=True,
         help="The path to a yml config file that contains necessary credentials.",
     )
+    parser.add_argument(
+        "--config",
+        required=True,
+        help="The path to yml config file that contains customized user settings.",
+    )
     parser.parse_args(argv[1:])
     args: argparse.Namespace = parser.parse_args(argv[1:])
 
@@ -61,17 +67,29 @@ def main(argv: List[str]) -> int:
 
     credential: Dict[str, Any]
     credential_path_str: str = args.credential
+    config: Dict[str, Any]
+    config_path_str: str = args.config
     try:
         credential_path: pathlib.Path = pathlib.Path(credential_path_str).resolve()
         with open(credential_path, "r") as f:
             credential = yaml.safe_load(f)
+        config_path: pathlib.Path = pathlib.Path(config_path_str).resolve()
+        with open(config_path, "r") as f:
+            config = yaml.safe_load(f)
     except Exception:
         print(f"Failed to load the credential file from '{credential_path}'.")
         raise
 
     intents: discord.Intents = discord.Intents.default()
     intents.message_content = True
-    client: WishingStarClient = WishingStarClient(intents, logger, credential)
-    client.serve()
+    wishing_star: WishingStar = WishingStar(
+        command_prefix="?", logger=logger, credential=credential, config=config, intents=intents
+    )
 
-    return 0
+    try:
+        asyncio.run(wishing_star.add_cog(WishingStarCog(wishing_star)))
+        wishing_star.serve()
+        return 0
+    except Exception as e:
+        logger.error(f"Exiting on error. Error message: {e}")
+        return -1
