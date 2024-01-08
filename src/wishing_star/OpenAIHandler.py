@@ -77,7 +77,7 @@ class OpenAIHandler:
         self.logger: logging.Logger = logger
         self.last_success_request_ts: int = 0
         self.default_temperature: float = 0.1
-        self.minimum_request_period: int = 5 * 1000  # 15 seconds
+        self.minimum_request_period: int = 5 * 1000  # 5 seconds
         self.model: str = "gpt-3.5"
         if using_gpt_4:
             self.model = "gpt-4"
