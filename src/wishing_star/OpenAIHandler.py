@@ -60,12 +60,12 @@ class UserChatHistory:
 class OpenAIHandler:
     """
     This class implements the handlers to response to OpenAI related requests.
+    Since 2024.Jan.08, the default model has been set to gpt-4.
 
-    Notice that the default model is gpt-3.5-turbo.
     TODO: The dialog should be cached by different text chanel.
     """
 
-    def __init__(self, api_key: str, logger: logging.Logger, using_gpt_4: bool = False):
+    def __init__(self, api_key: str, logger: logging.Logger, using_gpt_4: bool = True):
         """
         Initializes the handler.
 
@@ -77,11 +77,12 @@ class OpenAIHandler:
         self.logger: logging.Logger = logger
         self.last_success_request_ts: int = 0
         self.default_temperature: float = 0.1
-        self.minimum_request_period: int = 5 * 1000
-        self.model: str = "gpt-3.5-turbo"
+        self.minimum_request_period: int = 5 * 1000  # 15 seconds
+        self.model: str = "gpt-3.5"
         if using_gpt_4:
             self.model = "gpt-4"
         self.chat_history_db: Dict[int, UserChatHistory] = {}
+        self.logger.info(f"OpenAI model: {self.model}")
 
     def chat(self, msg: str, uid: int) -> str:
         """
